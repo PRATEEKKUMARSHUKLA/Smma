@@ -1,62 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Appointment Booking</title>
-    <style>
-        body {
-    font-family: Arial, sans-serif;
-}
-
-.container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    text-align: center;
-}
-
-h1 {
-    color: #333;
-}
-
-form {
-    margin: 20px 0;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-input[type="date"],
-input[type="time"],
-input[type="email"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007BFF;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-    </style>
+    <!-- Your head content -->
 </head>
 <body>
     <div class="container">
@@ -65,7 +10,7 @@ button:hover {
             <label for="date">Select Date:</label>
             <input type="date" id="date" required>
             
-            <label for="time">Select Time:</label>
+            <label for "time">Select Time:</label>
             <input type="time" id="time" required>
             
             <button type="button" id="book-appointment">Book Appointment</button>
@@ -80,13 +25,16 @@ button:hover {
         bookAppointmentButton.addEventListener("click", function () {
             const selectedDate = new Date(dateInput.value);
             const selectedTime = new Date(`1970-01-01T${timeInput.value}`);
-
             const currentDate = new Date();
 
             if (selectedDate < currentDate || (selectedDate.toDateString() === currentDate.toDateString() && selectedTime <= currentDate)) {
                 alert("Please select a date and time in the future.");
             } else {
-                const mailtoLink = `mailto:kintsugiplasticsurgery@gmail.com?subject=Reserva%20de%20cita&body=kindly book my appointment on %0A%0A Date:${selectedDate.toISOString()} %0A%0A Time:${selectedTime.toLocaleTimeString()}`;
+                // Format the date and time manually
+                const formattedDate = `${selectedDate.getFullYear()}-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getDate().toString().padStart(2, '0')}`;
+                const formattedTime = `${selectedTime.getHours().toString().padStart(2, '0')}:${selectedTime.getMinutes().toString().padStart(2, '0')}`;
+
+                const mailtoLink = `mailto:kintsugiplasticsurgery@gmail.com?subject=Reserva%20de%20cita&body=Date:${formattedDate}%0A%0ATime:${formattedTime}`;
 
                 window.location.href = mailtoLink;
             }
