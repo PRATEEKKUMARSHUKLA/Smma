@@ -86,7 +86,7 @@ button:hover {
             if (selectedDate < currentDate || (selectedDate.toDateString() === currentDate.toDateString() && selectedTime <= currentDate)) {
                 alert("Please select a date and time in the future.");
             } else {
-                const mailtoLink = `mailto:kintsugiplasticsurgery@gmail.com?subject=Reserva%20de%20cita&body=Date:kindly book my appointment on%0A%0ADate:${selectedDate.toISOString()}%0A%0ATime:${selectedTime.toLocaleTimeString()}`;
+                const mailtoLink = `mailto:kintsugiplasticsurgery@gmail.com?subject=Reserva%20de%20cita&body=kindly book my appointment on %0A%0A Date:${selectedDate.toISOString()} %0A%0A Time:${selectedTime.toLocaleTimeString()}`;
 
                 window.location.href = mailtoLink;
             }
