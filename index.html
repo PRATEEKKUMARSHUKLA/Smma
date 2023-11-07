@@ -4,7 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointment Booking</title>
-    <link rel="stylesheet" href="./styles.css">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+}
+
+form {
+    margin: 20px 0;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="date"],
+input[type="time"],
+input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+    </style>
 </head>
 <body>
     <div class="container">
@@ -21,13 +73,40 @@
     </div>
 
     <script>
-        document.getElementById("book-appointment").addEventListener("click", function () {
-            const selectedDate = document.getElementById("date").value;
-            const selectedTime = document.getElementById("time").value;
+        const dateInput = document.getElementById("date");
+        const timeInput = document.getElementById("time");
+        const bookAppointmentButton = document.getElementById("book-appointment");
 
-            const mailtoLink = `mailto:prateekkumarshukla10@gmail.com?subject=Reserva%20de%20cita&body=Date:${selectedDate}%0A%0ATime:${selectedTime}`;
+        bookAppointmentButton.addEventListener("click", function () {
+            const selectedDate = new Date(dateInput.value);
+            const selectedTime = new Date(`1970-01-01T${timeInput.value}`);
 
-            window.location.href = mailtoLink;
+            const currentDate = new Date();
+
+            if (selectedDate < currentDate || (selectedDate.toDateString() === currentDate.toDateString() && selectedTime <= currentDate)) {
+                alert("Please select a date and time in the future.");
+            } else {
+                const mailtoLink = `mailto:kintsugiplasticsurgery@gmail.com?subject=Reserva%20de%20cita&body=Date:kindly book my appointment on%0A%0ADate:${selectedDate.toISOString()}%0A%0ATime:${selectedTime.toLocaleTimeString()}`;
+
+                window.location.href = mailtoLink;
+            }
+        });
+
+        // Disable past dates in the date input
+        dateInput.min = new Date().toISOString().split("T")[0];
+
+        // Allow selection of current date with a time not earlier than the current time
+        dateInput.addEventListener("input", function () {
+            const selectedDate = new Date(dateInput.value);
+            const currentDate = new Date();
+
+            if (selectedDate.toDateString() === currentDate.toDateString()) {
+                const currentTime = `${currentDate.getHours()}:${(currentDate.getMinutes() < 10 ? '0' : '') + currentDate.getMinutes()}`;
+                timeInput.min = currentTime;
+            } else {
+                // Allow any time when the date is not the current date
+                timeInput.min = "00:00";
+            }
         });
     </script>
 </body>
