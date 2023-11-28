@@ -74,43 +74,62 @@ button:hover {
 
     <script>
         const dateInput = document.getElementById("date");
-        const timeInput = document.getElementById("time");
-        const bookAppointmentButton = document.getElementById("book-appointment");
+const timeInput = document.getElementById("time");
+const bookAppointmentButton = document.getElementById("book-appointment");
 
-        bookAppointmentButton.addEventListener("click", function () {
-            const selectedDate = new Date(dateInput.value);
-            const selectedTime = new Date(`1970-01-01T${timeInput.value}`);
-            const currentDate = new Date();
+function isValidTime(selectedDate, selectedTime) {
+    const dayOfWeek = selectedDate.getDay();
+    const hours = selectedTime.getHours();
 
-            if (selectedDate < currentDate || (selectedDate.toDateString() === currentDate.toDateString() && selectedTime <= currentDate)) {
-                alert("Please select a date and time in the future.");
-            } else {
-                // Format the date and time manually
-                const formattedDate = `${selectedDate.getFullYear()}-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getDate().toString().padStart(2, '0')}`;
-                const formattedTime = `${selectedTime.getHours().toString().padStart(2, '0')}:${selectedTime.getMinutes().toString().padStart(2, '0')}`;
+    // Monday to Friday (0 = Sunday, 6 = Saturday)
+    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+        return hours >= 8 && hours <= 16;
+    }
+    // Saturday
+    else if (dayOfWeek === 6) {
+        return hours >= 9 && hours <= 12;
+    }
+    return false;
+}
 
-                const mailtoLink = `mailto:kintsugiplasticsurgery@gmail.com?subject=Reserva%20de%20cita&body=Date:${formattedDate}%0A%0ATime:${formattedTime}`;
+bookAppointmentButton.addEventListener("click", function () {
+    const selectedDate = new Date(dateInput.value);
+    const selectedTime = new Date(`1970-01-01T${timeInput.value}`);
+    const currentDate = new Date();
 
-                window.location.href = mailtoLink;
-            }
-        });
+    if (selectedDate < currentDate || (selectedDate.toDateString() === currentDate.toDateString() && selectedTime <= currentDate)) {
+        alert("Please select a date and time in the future.");
+    } else if (!isValidTime(selectedDate, selectedTime)) {
+        alert("Please select a valid time:\nMonday to Friday (8 AM to 5 PM)\nSaturday (9 AM to 1 PM)");
+    } else {
+        const formattedDate = `${selectedDate.getFullYear()}-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getDate().toString().padStart(2, '0')}`;
+        const formattedTime = `${selectedTime.getHours().toString().padStart(2, '0')}:${selectedTime.getMinutes().toString().padStart(2, '0')}`;
 
-        // Disable past dates in the date input
-        dateInput.min = new Date().toISOString().split("T")[0];
+        const mailtoLink = `mailto:kintsugiplasticsurgery@gmail.com?subject=Book%20my%20appointment on&body=Date:${formattedDate}%0A%0ATime:${formattedTime}`;
 
-        // Allow selection of current date with a time not earlier than the current time
-        dateInput.addEventListener("input", function () {
-            const selectedDate = new Date(dateInput.value);
-            const currentDate = new Date();
+        window.location.href = mailtoLink;
+    }
+});
 
-            if (selectedDate.toDateString() === currentDate.toDateString()) {
-                const currentTime = `${currentDate.getHours()}:${(currentDate.getMinutes() < 10 ? '0' : '') + currentDate.getMinutes()}`;
-                timeInput.min = currentTime;
-            } else {
-                // Allow any time when the date is not the current date
-                timeInput.min = "00:00";
-            }
-        });
+// Disable past dates in the date input and Sundays (day 0)
+const today = new Date().toISOString().split("T")[0];
+dateInput.min = today;
+dateInput.addEventListener("input", function () {
+    const selectedDate = new Date(dateInput.value);
+    const currentDate = new Date();
+
+    if (selectedDate.toDateString() === currentDate.toDateString()) {
+        const currentTime = `${currentDate.getHours()}:${(currentDate.getMinutes() < 10 ? '0' : '') + currentDate.getMinutes()}`;
+        timeInput.min = currentTime;
+    } else {
+        timeInput.min = "00:00";
+    }
+
+    if (selectedDate.getDay() === 0) {
+        alert("Please select a date other than Sunday.");
+        dateInput.value = ''; // Clear the selected date
+    }
+});
     </script>
 </body>
 </html>
